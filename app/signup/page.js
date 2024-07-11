@@ -1,11 +1,9 @@
-// app/signup/page.js
-'use client'; // Marking this file as a client component
-
+'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/authContext';
 import Link from 'next/link';
-import Spinner from '../components/Spinner';
+import Conditional from '../components/Conditional';
 
 export default function SignUp() {
   const [displayName, setdisplayName] = useState('');
@@ -23,7 +21,6 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Perform sign-up logic (e.g., Firebase auth)
       await signUp(email, password, displayName);
       router.push('/');
     } catch (err) {
@@ -32,10 +29,8 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                 {authLoading ? (
-       <Spinner/>
-      ) : (
+  
+    <Conditional>
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign Up</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -78,7 +73,7 @@ export default function SignUp() {
           Already have an account? <Link href="/signin" className="text-blue-600">Sign In</Link>
         </p>
       </div>
-      )}
-    </div>
+    </Conditional>
+   
   );
 }
