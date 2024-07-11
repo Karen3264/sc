@@ -1,18 +1,24 @@
 // app/signup/page.js
 'use client'; // Marking this file as a client component
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
 import { useAuth } from '../context/authContext';
 import Link from 'next/link';
+import Spinner from '../components/Spinner';
 
 export default function SignUp() {
-    const [displayName, setdisplayName] = useState('');
+  const [displayName, setdisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { signUp } = useAuth();
+  const { signUp, authLoading, setAuthLoading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    setAuthLoading(false)
+  },[])
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,6 +33,9 @@ export default function SignUp() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                 {authLoading ? (
+       <Spinner/>
+      ) : (
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign Up</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -69,6 +78,7 @@ export default function SignUp() {
           Already have an account? <Link href="/signin" className="text-blue-600">Sign In</Link>
         </p>
       </div>
+      )}
     </div>
   );
 }

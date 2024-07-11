@@ -10,20 +10,22 @@ import { auth, googleProvider } from './firebase';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(-1);
   const [user, setUser] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    
     const unsubscribe = onAuthStateChanged(auth, (u) => {
+ 
       if (u) {
         setIsAuthenticated(true);
         setUser(u)
       } else {
         setIsAuthenticated(false);
       }
-   
+
     });
 
     return () => unsubscribe();
@@ -48,6 +50,7 @@ export function AuthProvider({ children }) {
   };
 
   const signUp = async (email, password, displayName) => {
+    setAuthLoading(true)
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, {
@@ -57,27 +60,32 @@ export function AuthProvider({ children }) {
       router.push('/');
     } catch (error) {
       console.error('Error signing up:', error);
+      setAuthLoading(false)
       throw error;
     }
   };
 
   const signOut = async () => {
+    setAuthLoading(true)
     try {
       await firebaseSignOut(auth);
       setIsAuthenticated(false);
       router.push('/signin');
     } catch (error) {
       console.error('Error signing out:', error);
+      setAuthLoading(false)
     }
   };
 
   const signInWithGoogle = async () => {
+    setAuthLoading(true)
     try {
       await signInWithPopup(auth, googleProvider);
       setIsAuthenticated(true);
       router.push('/');
     } catch (error) {
       console.error('Error signing in with Google:', error);
+      setAuthLoading(false)
     }
   };
 

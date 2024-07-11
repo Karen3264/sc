@@ -4,21 +4,22 @@
 import { useAuth } from './context/authContext';
 import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
 import { useEffect } from 'react';
+import Spinner from './components/Spinner';
 export default function Home() {
-  const { isAuthenticated, signOut, user, setAuthLoading } = useAuth();
+  const { isAuthenticated, signOut, user, setAuthLoading, authLoading } = useAuth();
   const router = useRouter();
-  console.log(user)
+
 
   useEffect(() => {
     setAuthLoading(false)
-    
-  })
+  },[])
 
 
 
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      {(isAuthenticated==-1 || authLoading)? (      <Spinner/>):(
       <div className="text-center">
         {isAuthenticated ? (
           <>
@@ -36,7 +37,7 @@ export default function Home() {
           </>
           
         )}
-      </div>
+      </div>)}
     </div>
   );
 }

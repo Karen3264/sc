@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
 import { useAuth } from '../context/authContext';
 import Link from 'next/link';
+import Spinner from '../components/Spinner';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('karenvergeest@gmail.com');
+  const [email, setEmail] = useState('ara@gmail.com');
   const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
   const { signIn, signInWithGoogle, authLoading, setAuthLoading} = useAuth();
@@ -15,7 +16,7 @@ export default function SignIn() {
 
 
   useEffect(()=>{
-    setAuthLoading(false)
+   setAuthLoading(false)
   }, [])
 
   const handleSubmit = async (e) => {
@@ -31,9 +32,7 @@ export default function SignIn() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
              {authLoading ? (
-        <div className="text-center">
-          <p className="text-xl font-bold text-gray-700">Loading...</p>
-        </div>
+        <Spinner/>
       ) : (
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign In</h2>
