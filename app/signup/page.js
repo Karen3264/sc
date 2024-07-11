@@ -10,14 +10,14 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Perform sign-up logic (e.g., Firebase auth)
-      signIn();
+      signUp(email, password);
       router.push('/');
     } catch (err) {
       setError('Failed to sign up');

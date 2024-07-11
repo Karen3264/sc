@@ -7,17 +7,18 @@ import { useAuth } from '../context/authContext';
 import Link from 'next/link';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('karenvergeest@gmail.com');
+  const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Perform sign-in logic (e.g., Firebase auth)
-      signIn();
+      signIn(email, password);
       router.push('/');
     } catch (err) {
       setError('Failed to sign in');
@@ -57,6 +58,11 @@ export default function SignIn() {
         <p className="text-sm text-center text-gray-700">
           Dont have an account? <Link href="/signup" className="text-blue-600">Sign Up</Link>
         </p>
+        <div className="text-center">
+          <button onClick={signInWithGoogle} className="px-4 py-2 mt-4 text-white bg-red-600 rounded-md">
+            Sign In with Google
+          </button>
+        </div>
       </div>
     </div>
   );
