@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
   const signIn = () => setIsAuthenticated(true);
   const signOut = () => {
     setIsAuthenticated(false);
-    router.push('/signin');
   };
 
   return (

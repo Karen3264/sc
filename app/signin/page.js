@@ -7,8 +7,8 @@ import { useAuth } from '../context/authContext';
 import Link from 'next/link';
 
 export default function SignIn() {
-  const [email, setEmail] = useState('k@dd');
-  const [password, setPassword] = useState('tq');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { signIn } = useAuth();
   const router = useRouter();
