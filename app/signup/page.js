@@ -7,6 +7,7 @@ import { useAuth } from '../context/authContext';
 import Link from 'next/link';
 
 export default function SignUp() {
+    const [displayName, setdisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,7 +18,7 @@ export default function SignUp() {
     e.preventDefault();
     try {
       // Perform sign-up logic (e.g., Firebase auth)
-      signUp(email, password);
+      await signUp(email, password, displayName);
       router.push('/');
     } catch (err) {
       setError('Failed to sign up');
@@ -30,6 +31,16 @@ export default function SignUp() {
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign Up</h2>
         {error && <p className="text-red-500">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+            <label className="block text-sm font-medium text-gray-700">Username</label>
+            <input
+              type="username"
+              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md text-gray-700"
+              value={displayName}
+              onChange={(e) => setdisplayName(e.target.value)}
+              required
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
