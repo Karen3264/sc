@@ -55,7 +55,7 @@ export default function SignIn() {
           </div>
         </form>
         <p className="text-sm text-center text-gray-700">
-          Don't have an account? <Link href="/signup" className="text-blue-600">Sign Up</Link>
+          Dont have an account? <Link href="/signup" className="text-blue-600">Sign Up</Link>
         </p>
       </div>
     </div>
