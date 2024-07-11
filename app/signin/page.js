@@ -1,7 +1,7 @@
 // app/signin/page.js
 'use client'; // Marking this file as a client component
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
 import { useAuth } from '../context/authContext';
 import Link from 'next/link';
@@ -10,23 +10,31 @@ export default function SignIn() {
   const [email, setEmail] = useState('karenvergeest@gmail.com');
   const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, authLoading, setAuthLoading} = useAuth();
   const router = useRouter();
 
+
+  useEffect(()=>{
+    setAuthLoading(false)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Perform sign-in logic (e.g., Firebase auth)
-      signIn(email, password);
-      router.push('/');
+      await signIn(email, password);
     } catch (err) {
+        
       setError('Failed to sign in');
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+             {authLoading ? (
+        <div className="text-center">
+          <p className="text-xl font-bold text-gray-700">Loading...</p>
+        </div>
+      ) : (
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign In</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -64,6 +72,7 @@ export default function SignIn() {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }

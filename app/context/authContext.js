@@ -12,6 +12,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,13 +31,20 @@ export function AuthProvider({ children }) {
 
 
   const signIn = async (email, password) => {
+    setAuthLoading(true)
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsAuthenticated(true);
       router.push('/');
+
     } catch (error) {
-      console.error('Error signing in:', error);
+      console.error('Error thrown signing in:', error);
+      setAuthLoading(false)
+      
+      throw error;
+     
     }
+    
   };
 
   const signUp = async (email, password, displayName) => {
@@ -49,6 +57,7 @@ export function AuthProvider({ children }) {
       router.push('/');
     } catch (error) {
       console.error('Error signing up:', error);
+      throw error;
     }
   };
 
@@ -73,7 +82,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, signUp, signOut, signInWithGoogle, user}}>
+    <AuthContext.Provider value={{ isAuthenticated, signIn, signUp, signOut, signInWithGoogle, user, authLoading, setAuthLoading}}>
       {children}
     </AuthContext.Provider>
   );

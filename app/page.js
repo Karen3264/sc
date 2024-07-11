@@ -3,11 +3,17 @@
 
 import { useAuth } from './context/authContext';
 import { useRouter } from 'next/navigation'; // Use 'next/navigation' for hooks in the app directory
-
+import { useEffect } from 'react';
 export default function Home() {
-  const { isAuthenticated, signOut, user } = useAuth();
+  const { isAuthenticated, signOut, user, setAuthLoading } = useAuth();
   const router = useRouter();
   console.log(user)
+
+  useEffect(() => {
+    setAuthLoading(false)
+    
+  })
+
 
 
 
