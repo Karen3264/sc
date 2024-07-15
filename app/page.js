@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "./context/authContext";
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Conditional from "./components/Conditional";
 import { useStore } from "./context/storeContext";
 import ScribbleCard from "./components/ScribbleCard";
@@ -13,19 +13,15 @@ export default function Home() {
   const [scribbles, setScribbles] = useState([]);
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const pageParam = searchParams.get("page");
-  const [currentPage, setCurrentPage] = useState(
-    pageParam ? parseInt(pageParam) : 1
-  );
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    if (pageParam) {
-      fetchScribbles(parseInt(pageParam));
-    } else {
-      fetchScribbles(1);
-    }
-  }, [pageParam]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get("page");
+    const pageNum = page ? parseInt(page) : 1;
+    setCurrentPage(pageNum);
+    fetchScribbles(pageNum);
+  }, [pathname]);
 
   const fetchScribbles = async (page) => {
     setAuthLoading(true);
@@ -43,8 +39,7 @@ export default function Home() {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    const newUrl = `${pathname}?page=${newPage}`;
-    router.push(newUrl);
+    router.push(`/?page=${newPage}`);
   };
 
   return (
@@ -59,9 +54,7 @@ export default function Home() {
       </ul>
       {scribbles.length == 0 ? (
         <h1 className="text-black">No more pages</h1>
-      ) : (
-        <></>
-      )}
+      ) : null}
       <div className="flex justify-between mt-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}

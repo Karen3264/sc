@@ -80,6 +80,16 @@ export const StoreProvider = ({ children }) => {
     // Add logic to publish the scribble with the given status
   };
 
+  const getDrafts = async (userId) => {
+    const draftsCollection = collection(db, `users/${user.uid}/drafts`);
+    const draftSnapshot = await getDocs(draftsCollection);
+    const draftsList = draftSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return draftsList;
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -88,6 +98,7 @@ export const StoreProvider = ({ children }) => {
         getNewestScribble,
         saveScribble,
         publishScribble,
+        getDrafts,
       }}
     >
       {children}
