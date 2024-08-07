@@ -40,6 +40,7 @@ export default function Home() {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     router.push(`/?page=${newPage}`);
+    fetchScribbles(newPage);
   };
 
   return (

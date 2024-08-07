@@ -32,6 +32,9 @@ export const StoreProvider = ({ children }) => {
   };
 
   const getScribblesByRank = async (minRank, maxRank) => {
+    console.log(minRank);
+    console.log(maxRank);
+    console.log("gitd");
     const scribblesCollection = collection(db, "scribbles");
     const q = query(
       scribblesCollection,
