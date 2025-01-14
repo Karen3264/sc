@@ -1,11 +1,11 @@
 "use client";
-import { useAuth } from "./context/authContext";
+import { useAuth } from "../context/authContext";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Conditional from "./components/Conditional";
-import { useStore } from "./context/storeContext";
-import ScribbleCard from "./components/ScribbleCard";
-import FloatingButton from "./components/FloatingButton";
+import Conditional from "../components/Conditional";
+import { useStore } from "../context/storeContext";
+import ScribbleCard from "../components/ScribbleCard";
+import FloatingButton from "../components/FloatingButton";
 
 export default function Home() {
   const { signOut, user, setAuthLoading } = useAuth();

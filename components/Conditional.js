@@ -4,10 +4,10 @@ import Spinner from "./Spinner";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function Conditional({ children }) {
-  const { authLoading, isAuthenticated } = useAuth();
+  const { authLoading, user } = useAuth();
   const router = useRouter();
   const currentRoute = usePathname();
-  if (authLoading || isAuthenticated == -1) {
+  if (authLoading) {
     return (
       <>
         <div className="flex items-center justify-center min-h-screen bg-white">
@@ -18,9 +18,7 @@ export default function Conditional({ children }) {
   }
   return (
     <div className="text-center">
-      {isAuthenticated ||
-      currentRoute == "/signin" ||
-      currentRoute == "/signup" ? (
+      {user != -1 || currentRoute == "/signin" || currentRoute == "/signup" ? (
         <>
           <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             {children}
@@ -42,3 +40,4 @@ export default function Conditional({ children }) {
     </div>
   );
 }
+// {isAuthenticated ||

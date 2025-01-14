@@ -5,14 +5,16 @@ import {
   getFirestore,
   collection,
   getDocs,
+  getDoc,
   query,
   where,
   orderBy,
   limit,
   doc,
   setDoc,
+  addDoc,
 } from "firebase/firestore";
-
+import { serverTimestamp } from "firebase/firestore";
 import { useAuth } from "./authContext";
 import { auth, googleProvider, db } from "./firebase";
 
@@ -79,8 +81,29 @@ export const StoreProvider = ({ children }) => {
 
     console.log("Draft saved with ID:", draftId);
   };
-  const publishScribble = async (text, status) => {
-    // Add logic to publish the scribble with the given status
+
+  const publishScribble = async (text, title, status) => {
+    const scribblesCollection = collection(db, "scribbles");
+    let newewstScribble = await getNewestScribble();
+    console.log(user);
+    //create new onjects
+    const newScribble = {
+      author: user.uid, // Author's ID
+      author_username: user.displayName,
+      content: text,
+      rank: newewstScribble.rank + 1, // Initial rank
+      rating: 0, // Initial rating
+      reviewed: false, // Initially not reviewed
+      reviewer: "", // Reviewer's ID
+      reviewer_username: "",
+      // Automatically generated timestamp
+      title,
+      timestamp: serverTimestamp(),
+    };
+    let ref = await addDoc(scribblesCollection, newScribble);
+    console.log(ref);
+    //add to scribble collection
+    console.log("Scribble published!");
   };
 
   const getDrafts = async (userId) => {
@@ -93,6 +116,14 @@ export const StoreProvider = ({ children }) => {
     return draftsList;
   };
 
+  const getDraft = async (draftId) => {
+    const draftRef = doc(db, `users/${user.uid}/drafts`, draftId);
+    const draftSnap = await getDoc(draftRef);
+    console.log("GET");
+    console.log(user);
+    console.log(draftSnap.data());
+    return draftSnap.data();
+  };
   return (
     <StoreContext.Provider
       value={{
@@ -102,6 +133,7 @@ export const StoreProvider = ({ children }) => {
         saveScribble,
         publishScribble,
         getDrafts,
+        getDraft,
       }}
     >
       {children}

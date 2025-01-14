@@ -17,10 +17,11 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(-1);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(-1);
   const [authLoading, setAuthLoading] = useState(true);
   const router = useRouter();
 
+  //listener for autch changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (u) {
@@ -28,6 +29,7 @@ export function AuthProvider({ children }) {
         setUser(u);
       } else {
         setIsAuthenticated(false);
+        setUser(-1);
       }
     });
 
@@ -36,72 +38,51 @@ export function AuthProvider({ children }) {
 
   const signIn = async (email, password) => {
     setAuthLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      console.error("Error thrown signing in:", error);
-      setAuthLoading(false);
-
-      throw error;
-    }
+    await signInWithEmailAndPassword(auth, email, password);
+    setIsAuthenticated(true);
+    router.push("/");
   };
 
   const signUp = async (email, password, displayName) => {
     setAuthLoading(true);
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await updateProfile(userCredential.user, {
-        displayName: displayName,
-      });
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      console.error("Error signing up:", error);
-      setAuthLoading(false);
-      throw error;
-    }
+    //add error cathing for wrong password enc
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    await updateProfile(userCredential.user, {
+      displayName: displayName,
+    });
+    setIsAuthenticated(true);
+    router.push("/");
   };
 
   const signOut = async () => {
     setAuthLoading(true);
-    try {
-      await firebaseSignOut(auth);
-      setIsAuthenticated(false);
-      router.push("/signin");
-    } catch (error) {
-      console.error("Error signing out:", error);
-      setAuthLoading(false);
-    }
+    await firebaseSignOut(auth);
+    setIsAuthenticated(false);
+    router.push("/signin");
   };
 
   const signInWithGoogle = async () => {
     setAuthLoading(true);
-    try {
-      await signInWithPopup(auth, googleProvider);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
-      setAuthLoading(false);
-    }
+    await signInWithPopup(auth, googleProvider);
+    setIsAuthenticated(true);
+    router.push("/");
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated,
-        signIn,
-        signUp,
-        signOut,
-        signInWithGoogle,
-        user,
-        authLoading,
+        //functionality
+        signIn, // email, password
+        signUp, // email, password, displayName
+        signOut, //()
+        signInWithGoogle, // ()
+        //variables
+        user, //is updated as user on firebase changes
+        authLoading, //should be moved to Loading context
         setAuthLoading,
       }}
     >
