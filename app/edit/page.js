@@ -5,11 +5,14 @@ import { useStore } from "../../context/storeContext";
 import Conditional from "../../components/Conditional";
 import { useAuth } from "../../context/authContext";
 import ScribbleEditor from "./ScribbleEditor";
+
 export default function EditScribble() {
   const { signUp, authLoading, setAuthLoading } = useAuth();
-  const [conent, setContent] = useState();
+  const [content, setContent] = useState();
   const { getDraft, saveScribble, publishScribble } = useStore();
   const [draft, setDraft] = useState();
+  const [title, setTitle] = useState("");
+  const [draftId, setDraftId] = useState(null);
 
   useEffect(() => {
     setAuthLoading(false);
@@ -21,24 +24,39 @@ export default function EditScribble() {
 
   const setup = async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    console.log(urlParams.get("id"));
-    let d = await getDraft(urlParams.get("id"));
-    console.log(d);
-    d.id = urlParams.get("id");
-    setDraft(d);
-    setText(d.content);
+    const id = urlParams.get("id");
+    if (id) {
+      console.log(id);
+      let d = await getDraft(id);
+      console.log(d);
+      d.id = id;
+      setDraft(d);
+      setText(d.content);
+      setTitle(d.title || "");
+      setDraftId(id);
+    }
   };
 
   const router = useRouter();
 
   const handleSaveDraft = async () => {
-    await saveScribble(text, draft.id);
-    console.log(draft);
-    setStatus("Draft saved");
+    try {
+      const newDraftId = await saveScribble(text, draftId, title);
+      setDraftId(newDraftId);
+      setStatus("Draft saved");
+      router.push("/drafts"); // Redirect to drafts page after saving
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      setStatus("Error saving draft");
+    }
   };
 
   const handlePublish = async () => {
-    await publishScribble(text, "test title", "status");
+    if (!title.trim()) {
+      setStatus("Please enter a title");
+      return;
+    }
+    await publishScribble(text, title, "status", draftId);
     setStatus("Scribble published");
     router.push("/"); // Redirect to home or any other page
   };
@@ -50,6 +68,8 @@ export default function EditScribble() {
       onSave={handleSaveDraft}
       onPublish={handlePublish}
       status={status}
+      title={title}
+      onTitleChange={setTitle}
     />
   );
 }

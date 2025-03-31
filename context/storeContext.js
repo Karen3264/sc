@@ -13,6 +13,7 @@ import {
   doc,
   setDoc,
   addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import { useAuth } from "./authContext";
@@ -71,18 +72,31 @@ export const StoreProvider = ({ children }) => {
     return newestScribble;
   };
 
-  const saveScribble = async (text, draftId) => {
+  const saveScribble = async (text, draftId = null, title = "") => {
     const userId = user.uid;
-    const docRef = doc(db, `users/${userId}/drafts/${draftId}`);
-
-    await setDoc(docRef, {
-      content: text,
-    });
-
-    console.log("Draft saved with ID:", draftId);
+    const draftsCollection = collection(db, `users/${userId}/drafts`);
+    
+    if (draftId) {
+      // Update existing draft
+      const docRef = doc(db, `users/${userId}/drafts/${draftId}`);
+      await setDoc(docRef, {
+        content: text,
+        title: title,
+        timestamp: serverTimestamp(),
+      });
+      return draftId;
+    } else {
+      // Create new draft
+      const docRef = await addDoc(draftsCollection, {
+        content: text,
+        title: title,
+        timestamp: serverTimestamp(),
+      });
+      return docRef.id;
+    }
   };
 
-  const publishScribble = async (text, title, status) => {
+  const publishScribble = async (text, title, status, draftId = null) => {
     const scribblesCollection = collection(db, "scribbles");
     let newewstScribble = await getNewestScribble();
     console.log(user);
@@ -102,7 +116,13 @@ export const StoreProvider = ({ children }) => {
     };
     let ref = await addDoc(scribblesCollection, newScribble);
     console.log(ref);
-    //add to scribble collection
+
+    // If this was a draft, delete it after successful publication
+    if (draftId) {
+      const draftRef = doc(db, `users/${user.uid}/drafts/${draftId}`);
+      await deleteDoc(draftRef);
+    }
+
     console.log("Scribble published!");
   };
 

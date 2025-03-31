@@ -4,10 +4,24 @@ export default function ScribbleEditor({
   onSave,
   onPublish,
   status,
+  title,
+  onTitleChange,
 }) {
   return (
     <div className="max-w-3xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4 text-black">Edit Scribble</h1>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Title
+        </label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded text-black"
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          placeholder="Enter your scribble title..."
+        />
+      </div>
       <textarea
         className="w-full p-2 border border-gray-300 rounded mb-4 text-black"
         rows="10"
