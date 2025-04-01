@@ -6,6 +6,42 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* Red (#B6494D) variations */
+  --red-50: #F7E5E6;  /* Lightest */
+  --red-100: #EECBCD;
+  --red-200: #E5B1B4;
+  --red-300: #DC979B;
+  --red-400: #D37D82;
+  --red-500: #B6494D;  /* Base color */
+  --red-600: #923B3E;
+  --red-700: #6D2C2E;
+  --red-800: #491D1F;
+  --red-900: #240F0F;  /* Darkest */
+
+  /* Green (#113B36) variations */
+  --green-50: #E1E7E6;  /* Lightest */
+  --green-100: #C3CFCD;
+  --green-200: #A5B7B4;
+  --green-300: #879F9B;
+  --green-400: #698782;
+  --green-500: #113B36;  /* Base color */
+  --green-600: #0E2F2B;
+  --green-700: #0A2320;
+  --green-800: #071816;
+  --green-900: #030C0B;  /* Darkest */
+
+  /* Yellow (#E8B04B) variations */
+  --yellow-50: #FDF6E5;  /* Lightest */
+  --yellow-100: #FAECCB;
+  --yellow-200: #F7E2B1;
+  --yellow-300: #F4D897;
+  --yellow-400: #F1CE7D;
+  --yellow-500: #E8B04B;  /* Base color */
+  --yellow-600: #BA8D3C;
+  --yellow-700: #8B692D;
+  --yellow-800: #5D461E;
+  --yellow-900: #2E230F;  /* Darkest */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,14 +52,16 @@
   }
 }
 
+html {
+  background-color: var(--green-500);
+  min-height: 100vh;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: var(--green-500);
+  min-height: 100vh;
+  margin: 0;
 }
 
 @layer utilities {
