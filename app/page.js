@@ -6,6 +6,7 @@ import Conditional from "../components/Conditional";
 import { useStore } from "../context/storeContext";
 import ScribbleCard from "../components/ScribbleCard";
 import FloatingButton from "../components/FloatingButton";
+import Link from "next/link";
 
 export default function Home() {
   const { signOut, user, setAuthLoading } = useAuth();
@@ -45,42 +46,56 @@ export default function Home() {
 
   return (
     <Conditional>
-      <h1 className="text-4xl font-bold text-black">
-        Welcome {user.displayName}, you are signed in!
-      </h1>
-      <ul className="list-disc pl-5">
-        {scribbles.map((scribble, index) => (
-          <ScribbleCard key={index} scribble={scribble} />
-        ))}
-      </ul>
-      {scribbles.length == 0 ? (
-        <h1 className="text-black">No more pages</h1>
-      ) : null}
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          className={`px-4 py-2 text-white bg-blue-600 rounded-md ${
-            currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2">{currentPage}</span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          className="px-4 py-2 text-white bg-blue-600 rounded-md"
-        >
-          Next
-        </button>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+            Welcome, {user.displayName}
+          </h1>
+          <p className="text-xl text-gray-600">
+            Discover and create amazing scribbles
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-8">
+          {scribbles.map((scribble, index) => (
+            <ScribbleCard key={index} scribble={scribble} />
+          ))}
+        </div>
+
+        {scribbles.length === 0 && (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-medium text-gray-900 mb-2">No more scribbles</h2>
+            <p className="text-gray-600">Be the first to create a new scribble!</p>
+          </div>
+        )}
+
+        {scribbles.length > 0 && (
+          <div className="flex items-center justify-center gap-4 mt-12">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={`px-6 py-2.5 text-sm font-medium rounded-full transition-colors
+                ${currentPage === 1 
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-sm font-medium text-gray-700">
+              Page {currentPage}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="px-6 py-2.5 text-sm font-medium rounded-full bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+        <FloatingButton />
       </div>
-      <button
-        onClick={signOut}
-        className="px-4 py-2 mt-4 text-white bg-red-600 rounded-md"
-      >
-        Sign Out
-      </button>
-      <FloatingButton />
     </Conditional>
   );
 }

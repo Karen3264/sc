@@ -5,7 +5,7 @@ const ScribbleCard = ({ scribble }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 640); // Example breakpoint for mobile view
+      //setIsMobile(window.innerWidth < 640);
     };
 
     window.addEventListener("resize", handleResize);
@@ -17,23 +17,19 @@ const ScribbleCard = ({ scribble }) => {
   }, []);
 
   return (
-    <div
-      className={`max-w-sm rounded overflow-hidden shadow-lg bg-white m-4 ${
-        isMobile ? "w-full" : "w-auto"
-      }`}
-    >
-      <div className="px-4 py-4">
-        <div className="font-bold text-lg mb-2">{scribble.title}</div>
-        <p className="text-gray-700 text-base">{scribble.content}</p>
+    <div className="w-full rounded-lg overflow-hidden shadow-lg bg-white">
+      <div className="px-8 py-6">
+        <div className="font-bold text-2xl mb-4">{scribble.title}</div>
+        <p className="text-gray-700 text-lg whitespace-pre-wrap leading-relaxed">{scribble.content}</p>
       </div>
-      <div className="px-4 pt-4 pb-2 flex flex-wrap">
-        <span className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+      <div className="px-8 py-4 bg-gray-50 flex flex-wrap gap-3">
+        <span className="bg-white rounded-full px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
           Rating: {scribble.rating}
         </span>
-        <span className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+        <span className="bg-white rounded-full px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
           Rank: {scribble.rank}
         </span>
-        <span className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+        <span className="bg-white rounded-full px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
           Reviewer: {scribble.reviewer_username}
         </span>
       </div>

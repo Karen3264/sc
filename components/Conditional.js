@@ -17,16 +17,16 @@ export default function Conditional({ children }) {
     );
   }
   return (
-    <div className="text-center">
+    <div className="w-full">
       {user != -1 || currentRoute == "/signin" || currentRoute == "/signup" ? (
         <>
-          <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+          <div className="min-h-screen bg-gray-100 py-8">
             {children}
           </div>
         </>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-          <h1 className="text-4xl font-bold  text-black ">
+          <h1 className="text-4xl font-bold text-black">
             You are not signed in.
           </h1>
           <button

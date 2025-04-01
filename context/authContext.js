@@ -10,8 +10,11 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   updateProfile,
+  deleteUser,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
+import { doc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "./firebase";
 
 const AuthContext = createContext();
 
@@ -72,6 +75,38 @@ export function AuthProvider({ children }) {
     router.push("/");
   };
 
+  const deleteAccount = async () => {
+    setAuthLoading(true);
+    try {
+      // Delete user data from Firestore first
+      const userRef = doc(db, `users/${user.uid}`);
+      await deleteDoc(userRef);
+      
+      // Delete user's drafts
+      const draftsRef = collection(db, `users/${user.uid}/drafts`);
+      const draftsSnapshot = await getDocs(draftsRef);
+      const deletePromises = draftsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+      
+      // Delete user's published scribbles
+      const scribblesRef = collection(db, "scribbles");
+      const scribblesQuery = query(scribblesRef, where("author", "==", user.uid));
+      const scribblesSnapshot = await getDocs(scribblesQuery);
+      const deleteScribblePromises = scribblesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deleteScribblePromises);
+      
+      // Finally, delete the user account
+      await deleteUser(user);
+      setIsAuthenticated(false);
+      router.push("/signin");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -80,6 +115,7 @@ export function AuthProvider({ children }) {
         signUp, // email, password, displayName
         signOut, //()
         signInWithGoogle, // ()
+        deleteAccount, // ()
         //variables
         user, //is updated as user on firebase changes
         authLoading, //should be moved to Loading context
