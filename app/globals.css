@@ -53,13 +53,13 @@
 }
 
 html {
-  background-color: var(--green-500);
+  background-color: var(--green-50);
   min-height: 100vh;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: var(--green-500);
+  background-color: var(--green-50);
   min-height: 100vh;
   margin: 0;
 }
