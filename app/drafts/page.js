@@ -4,6 +4,7 @@ import { useAuth } from "../../context/authContext";
 import { useStore } from "../../context/storeContext";
 import { useRouter } from "next/navigation";
 import DraftsList from "./DraftsList";
+import Conditional from "../../components/Conditional";
 
 export default function Drafts() {
   const { user } = useAuth();
@@ -38,9 +39,11 @@ export default function Drafts() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Your Drafts</h1>
-      <DraftsList drafts={drafts} onEdit={handleEdit} />
-    </div>
+    <Conditional>
+      <div className="max-w-3xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4">Your Drafts</h1>
+        <DraftsList drafts={drafts} onEdit={handleEdit} />
+      </div>
+    </Conditional>
   );
 }

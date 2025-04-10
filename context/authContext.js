@@ -13,7 +13,7 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
-import { doc, deleteDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { doc, deleteDoc, collection, getDocs, query, where, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 const AuthContext = createContext();
@@ -24,12 +24,44 @@ export function AuthProvider({ children }) {
   const [authLoading, setAuthLoading] = useState(true);
   const router = useRouter();
 
-  //listener for autch changes
+  // Function to fetch user's reviewing status
+  const fetchUserReviewingStatus = async (userId) => {
+    try {
+      const userDocRef = doc(db, `users/${userId}`);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (userDocSnap.exists()) {
+        console.log(userDocSnap.data());
+        return userDocSnap.data();
+      }
+      return { isReviewing: false, assignedScribble: null };
+    } catch (error) {
+      console.error("Error fetching user reviewing status:", error);
+      return { isReviewing: false, assignedScribble: null };
+    }
+  };
+
+  // Function to update the user object in the auth context
+  const updateUser = (updatedUserData) => {
+    setUser(updatedUserData);
+  };
+
+  //listener for auth changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       if (u) {
+        // Fetch the user's reviewing status
+        const reviewingStatus = await fetchUserReviewingStatus(u.uid);
+        
+        // Create a user object with the reviewing status
+        const userWithReviewingStatus = {
+          ...u,
+          isReviewing: reviewingStatus.isReviewing,
+          assignedScribble: reviewingStatus.assignedScribble
+        };
+        
         setIsAuthenticated(true);
-        setUser(u);
+        setUser(userWithReviewingStatus);
       } else {
         setIsAuthenticated(false);
         setUser(-1);
@@ -120,6 +152,7 @@ export function AuthProvider({ children }) {
         user, //is updated as user on firebase changes
         authLoading, //should be moved to Loading context
         setAuthLoading,
+        updateUser, // Function to update the user object
       }}
     >
       {children}

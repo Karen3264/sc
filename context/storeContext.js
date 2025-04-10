@@ -22,7 +22,7 @@ import { auth, googleProvider, db } from "./firebase";
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user, setAuthLoading, updateUser } = useAuth();
   const [scribbles, setScribbles] = useState([]);
 
   const getScribbles = async () => {
@@ -99,8 +99,8 @@ export const StoreProvider = ({ children }) => {
   const publishScribble = async (text, title, status, draftId = null) => {
     const scribblesCollection = collection(db, "scribbles");
     let newewstScribble = await getNewestScribble();
+    console.log(newewstScribble)
     console.log(user);
-    //create new onjects
     const newScribble = {
       author: user.uid, // Author's ID
       author_username: user.displayName,
@@ -116,12 +116,42 @@ export const StoreProvider = ({ children }) => {
     };
     let ref = await addDoc(scribblesCollection, newScribble);
     console.log(ref);
-
     // If this was a draft, delete it after successful publication
     if (draftId) {
       const draftRef = doc(db, `users/${user.uid}/drafts/${draftId}`);
       await deleteDoc(draftRef);
     }
+
+  
+
+      // Update the user document
+      console.log("tyring to update user")
+      console.log(user.uid)
+      const userRef = doc(db, `users/${user.uid}`);
+      await setDoc(userRef, {
+        isReviewing: true,
+        assignedScribble: newewstScribble.id
+      }, { merge: true });
+      
+      console.log(`Assigned scribble ${ref.id} to user ${user.id} for review`);
+      
+      // Fetch the updated user data from Firebase
+      const updatedUserDoc = await getDoc(userRef);
+      if (updatedUserDoc.exists()) {
+        const updatedUserData = updatedUserDoc.data();
+        console.log("Updated user data:", updatedUserData);
+        
+        // If the updated user is the current user, update the auth context
+          const updatedUser = {
+            ...user,
+            isReviewing: updatedUserData.isReviewing,
+            assignedScribble: updatedUserData.assignedScribble
+          };
+          updateUser(updatedUser);
+          console.log("Updated current user in auth context");
+        }
+      
+ 
 
     console.log("Scribble published!");
   };
@@ -144,6 +174,66 @@ export const StoreProvider = ({ children }) => {
     console.log(draftSnap.data());
     return draftSnap.data();
   };
+
+  const getScribbleById = async (scribbleId) => {
+    const scribbleRef = doc(db, "scribbles", scribbleId);
+    const scribbleSnap = await getDoc(scribbleRef);
+    if (scribbleSnap.exists()) {
+      return { id: scribbleSnap.id, ...scribbleSnap.data() };
+    }
+    return null;
+  };
+
+  const submitReview = async (scribbleId, reviewText, rating) => {
+    if (!user) {
+      throw new Error("User must be logged in to submit a review");
+    }
+    console.log("Scribble id: ", scribbleId)
+    const scribbleRef = doc(db, "scribbles", scribbleId);
+    const scribbleSnap = await getDoc(scribbleRef);
+    
+    if (!scribbleSnap.exists()) {
+      throw new Error("Scribble not found");
+    }
+
+    const scribbleData = scribbleSnap.data();
+    
+    // Check if this is the user's assigned scribble
+    const userAssignedRef = doc(db, `users/${user.uid}`);
+    const userAssignedSnap = await getDoc(userAssignedRef);
+    
+    // if (!userAssignedSnap.exists() || userAssignedSnap.data().assignedScribble !== scribbleId) {
+    //   throw new Error("You can only review your assigned scribble");
+    // }
+
+    // Update the scribble with the review
+    await setDoc(scribbleRef, {
+      ...scribbleData,
+      reviewed: true,
+      reviewer: user.uid,
+      reviewer_username: user.displayName,
+      review: reviewText,
+      rating: rating,
+      reviewTimestamp: serverTimestamp(),
+    });
+
+    // Update the user's reviewing status
+    await setDoc(userAssignedRef, {
+      isReviewing: false,
+      assignedScribble: null,
+    });
+
+    // Update the user object in the auth context to reflect the changes
+    const updatedUser = {
+      ...user,
+      isReviewing: false,
+      assignedScribble: null
+    };
+    updateUser(updatedUser);
+
+    return true;
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -154,6 +244,8 @@ export const StoreProvider = ({ children }) => {
         publishScribble,
         getDrafts,
         getDraft,
+        getScribbleById,
+        submitReview,
       }}
     >
       {children}
@@ -161,4 +253,6 @@ export const StoreProvider = ({ children }) => {
   );
 };
 
-export const useStore = () => useContext(StoreContext);
+export function useStore() {
+  return useContext(StoreContext);
+}
