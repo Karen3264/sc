@@ -8,49 +8,49 @@
   --background-end-rgb: 255, 255, 255;
 
   /* Red (#B6494D) variations */
-  --red-50: #F7E5E6;  /* Lightest */
-  --red-100: #EECBCD;
-  --red-200: #E5B1B4;
-  --red-300: #DC979B;
-  --red-400: #D37D82;
-  --red-500: #B6494D;  /* Base color */
-  --red-600: #923B3E;
-  --red-700: #6D2C2E;
-  --red-800: #491D1F;
-  --red-900: #240F0F;  /* Darkest */
+  --red-50: #f7e5e6; /* Lightest */
+  --red-100: #eecbcd;
+  --red-200: #e5b1b4;
+  --red-300: #dc979b;
+  --red-400: #d37d82;
+  --red-500: #b6494d; /* Base color */
+  --red-600: #923b3e;
+  --red-700: #6d2c2e;
+  --red-800: #491d1f;
+  --red-900: #240f0f; /* Darkest */
 
   /* Green (#113B36) variations */
-  --green-50: #E1E7E6;  /* Lightest */
-  --green-100: #C3CFCD;
-  --green-200: #A5B7B4;
-  --green-300: #879F9B;
+  --green-50: #e1e7e6; /* Lightest */
+  --green-100: #c3cfcd;
+  --green-200: #a5b7b4;
+  --green-300: #879f9b;
   --green-400: #698782;
-  --green-500: #113B36;  /* Base color */
-  --green-600: #0E2F2B;
-  --green-700: #0A2320;
+  --green-500: #113b36; /* Base color */
+  --green-600: #0e2f2b;
+  --green-700: #0a2320;
   --green-800: #071816;
-  --green-900: #030C0B;  /* Darkest */
+  --green-900: #030c0b; /* Darkest */
 
   /* Yellow (#E8B04B) variations */
-  --yellow-50: #FDF6E5;  /* Lightest */
-  --yellow-100: #FAECCB;
-  --yellow-200: #F7E2B1;
-  --yellow-300: #F4D897;
-  --yellow-400: #F1CE7D;
-  --yellow-500: #E8B04B;  /* Base color */
-  --yellow-600: #BA8D3C;
-  --yellow-700: #8B692D;
-  --yellow-800: #5D461E;
-  --yellow-900: #2E230F;  /* Darkest */
+  --yellow-50: #fdf6e5; /* Lightest */
+  --yellow-100: #faeccb;
+  --yellow-200: #f7e2b1;
+  --yellow-300: #f4d897;
+  --yellow-400: #f1ce7d;
+  --yellow-500: #e8b04b; /* Base color */
+  --yellow-600: #ba8d3c;
+  --yellow-700: #8b692d;
+  --yellow-800: #5d461e;
+  --yellow-900: #2e230f; /* Darkest */
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
+} */
 
 html {
   background-color: var(--green-50);
