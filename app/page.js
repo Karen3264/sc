@@ -64,8 +64,12 @@ export default function Home() {
 
         {scribbles.length === 0 && (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-medium text-gray-900 mb-2">No more scribbles</h2>
-            <p className="text-gray-600">Be the first to create a new scribble!</p>
+            <h2 className="text-2xl font-medium text-gray-900 mb-2">
+              No more scribbles
+            </h2>
+            <p className="text-gray-600">
+              Be the first to create a new scribble!
+            </p>
           </div>
         )}
 
@@ -74,9 +78,10 @@ export default function Home() {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               className={`px-6 py-2.5 text-sm font-medium rounded-full transition-colors
-                ${currentPage === 1 
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                ${
+                  currentPage === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                 }`}
               disabled={currentPage === 1}
             >
